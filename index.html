@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LS $tyle - Loja Oficial</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* --- ESTILOS GERAIS (TEMA PRETO E DOURADO) --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Arial', sans-serif; }
+        body { background-color: #0a0a0a; color: #fff; padding-bottom: 60px; overflow-x: hidden; } 
+        
+        /* CABEÇALHO */
+        header { background: #000; padding: 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #D4AF37; position: sticky; top: 0; z-index: 50; } 
+        .logo { font-size: 22px; font-weight: bold; color: #fff; text-transform: uppercase; letter-spacing: 1px; }
+        .logo span { color: #D4AF37; } 
+        .icons i { color: #D4AF37; font-size: 20px; cursor: pointer; position: relative; } 
+        
+        /* ÍCONE DO CARRINHO E CONTADOR */
+        #cart-count { position: absolute; top: -8px; right: -10px; background: red; color: white; font-size: 10px; font-weight: bold; padding: 2px 6px; border-radius: 50%; }
+
+        /* BARRA DE PESQUISA */
+        .search-area { background-color: #D4AF37; padding: 10px 15px; } 
+        .search-input-container { background: #000; border-radius: 4px; display: flex; align-items: center; padding: 8px; border: 1px solid #000; }
+        .search-input-container input { border: none; outline: none; width: 100%; padding-left: 10px; background: transparent; color: #fff; }
+        .search-input-container input::placeholder { color: #888; }
+        .search-input-container i { color: #D4AF37; }
+        
+        /* BANNER */
+        .outlet-banner { background-color: #111; color: #D4AF37; text-align: center; padding: 30px 20px; margin-bottom: 20px; border-bottom: 1px solid #333; }
+        .outlet-banner p { color: #aaa; font-size: 12px; margin-bottom: 5px; }
+        .coupon-box { background: #D4AF37; color: #000; padding: 10px; font-size: 20px; font-weight: bold; margin: 10px auto; max-width: 200px; border-radius: 3px; }
+        
+        /* GRADE DE PRODUTOS */
+        .products-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 10px; }
+        .product-card { background: #1a1a1a; border-radius: 5px; overflow: hidden; border: 1px solid #333; display: flex; flex-direction: column; justify-content: space-between; position: relative; }
+        .badge-left { position: absolute; top: 10px; left: 0; background: #000; color: #D4AF37; font-size: 9px; padding: 3px 6px; font-weight: bold; z-index: 10; border: 1px solid #D4AF37; border-left: none; }
+        .product-img { width: 100%; height: 180px; object-fit: cover; background-color: #222; }
+        .product-info { padding: 10px; text-align: center; display: flex; flex-direction: column; flex-grow: 1; }
+        .product-title { font-size: 11px; font-weight: bold; color: #fff; margin-bottom: 5px; height: 28px; overflow: hidden; text-transform: uppercase; }
+        .stars { color: #D4AF37; font-size: 9px; margin-bottom: 5px; }
+        .price-pix { color: #D4AF37; font-weight: bold; font-size: 16px; margin: 2px 0; }
+        .price-card { font-size: 10px; color: #888; margin-bottom: 10px; }
+
+        /* BOTÃO DE ESCOLHER */
+        .btn-comprar { display: block; background-color: #D4AF37; color: #000; text-align: center; padding: 10px; margin-top: auto; text-decoration: none; font-weight: bold; border-radius: 4px; font-size: 12px; text-transform: uppercase; cursor: pointer; border: none; width: 100%; transition: 0.2s; }
+        
+        /* WHATSAPP FLUTUANTE */
+        .whatsapp-btn { position: fixed; bottom: 20px; left: 20px; background-color: #25D366; color: white; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; box-shadow: 0 4px 10px rgba(0,0,0,0.5); z-index: 100; text-decoration: none; border: 2px solid #000; }
+
+        /* --- JANELA POP-UP DE OPÇÕES (SIMPLIFICADA) --- */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: none; z-index: 1000; justify-content: center; align-items: center; padding: 20px; }
+        .modal-content { background: #111; padding: 20px; border-radius: 8px; width: 100%; max-width: 400px; position: relative; border: 1px solid #D4AF37; box-shadow: 0 0 20px rgba(212, 175, 55, 0.2); }
+        .close-modal { position: absolute; top: 10px; right: 15px; font-size: 28px; cursor: pointer; color: #D4AF37; }
+        .modal-img { width: 150px; height: 150px; object-fit: cover; border-radius: 5px; margin-bottom: 15px; border: 1px solid #333; display: block; margin-left: auto; margin-right: auto; }
+        .modal-title { font-size: 18px; margin-bottom: 20px; color: #D4AF37; text-transform: uppercase; font-weight: bold; text-align: center;}
+        
+        /* BOTÕES DO MODAL */
+        .botoes-acao { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
+        .btn-finalizar { background-color: #D4AF37; color: #000; width: 100%; padding: 14px; font-size: 14px; font-weight: bold; border: none; border-radius: 4px; cursor: pointer; text-transform: uppercase; }
+        .btn-comprar-direto { background-color: #000; color: #D4AF37; width: 100%; padding: 14px; font-size: 14px; font-weight: bold; border: 1px solid #D4AF37; border-radius: 4px; cursor: pointer; text-transform: uppercase; }
+
+        /* --- MENU LATERAL DO CARRINHO --- */
+        .cart-sidebar { position: fixed; top: 0; right: -100%; width: 320px; max-width: 100%; height: 100%; background: #0a0a0a; z-index: 2000; transition: 0.3s ease; border-left: 2px solid #D4AF37; display: flex; flex-direction: column; box-shadow: -5px 0 15px rgba(0,0,0,0.8); }
+        .cart-sidebar.open { right: 0; }
+        .cart-header { padding: 20px; border-bottom: 1px solid #333; display: flex; justify-content: space-between; align-items: center; background: #000; }
+        .cart-header h3 { color: #D4AF37; font-size: 18px; text-transform: uppercase; }
+        .close-cart { color: #fff; font-size: 28px; cursor: pointer; }
+        .cart-body { padding: 20px; flex-grow: 1; overflow-y: auto; }
+        
+        /* ITEM DO CARRINHO */
+        .cart-item { border-bottom: 1px solid #222; padding: 15px 0; display: flex; justify-content: space-between; align-items: center; }
+        .cart-item-info { width: 80%; }
+        .cart-item-title { color: #D4AF37; font-weight: bold; font-size: 13px; margin-bottom: 5px; text-transform: uppercase; }
+        .cart-item-price { color: #fff; font-size: 14px; font-weight: bold; }
+        .btn-remove { background: #ff4444; color: white; border: none; width: 30px; height: 30px; border-radius: 4px; font-weight: bold; cursor: pointer; }
+        
+        .cart-footer { padding: 20px; background: #000; border-top: 1px solid #333; }
+        .cart-total-line { display: flex; justify-content: space-between; color: #D4AF37; font-size: 18px; font-weight: bold; margin-bottom: 15px; text-transform: uppercase; }
+        .btn-whatsapp-cart { background: #25D366; color: white; width: 100%; padding: 10px; border: none; border-radius: 2px; font-size: 5px; font-weight: bold; cursor: pointer; text-transform: uppercase; display: flex; justify-content: center; align-items: center; gap: 10px; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="icons"><i class="fas fa-bars"></i></div>
+        <div class="logo"><i class="fas fa-hanger"></i> BECKER <span>Nmt</span></div>
+        <div class="icons" onclick="abrirCarrinho()">
+            <i class="fas fa-shopping-cart">
+                <span id="cart-count">0</span>
+            </i>
+        </div>
+    </header>
+
+    <div class="search-area">
+        <div class="search-input-container">
+            <input type="text" placeholder="BUSCAR EM BECKER">
+            <i class="fas fa-search"></i>
+        </div>
+    </div>
+
+    <section class="outlet-banner">
+        <p>PRODUTOS EM PROMOÇÃO!</p>
+        <h2 style="font-size: 20px; margin-bottom: 10px;">TODOS COM FRETE GRÁTIS</h2>
+        <div class="coupon-box">BECKER</div>
+        <p>Compre agora!</p>
+    </section>
+
+    <div class="products-grid" id="lista-de-produtos"></div>
+
+    <a href="https://wa.me/5521988568185?text=Ol%C3%A1%2C%20vim%20pela%20BECKER%20%24NMT%20e%20gostaria%20de%20saber%20mais!" class="whatsapp-btn" target="_blank">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
+    <div id="modal-opcoes" class="modal-overlay">
+        <div class="modal-content">
+            <span class="close-modal" onclick="fecharModal()">&times;</span>
+            <img id="modal-img" src="" class="modal-img" alt="Produto">
+            <div id="modal-title" class="modal-title">Nome do Produto</div>
+            
+            <div class="botoes-acao">
+                <button class="btn-finalizar" onclick="adicionarAoCarrinho()">Adicionar ao Carrinho 🛒</button>
+                <button class="btn-comprar-direto" onclick="irParaPagamento()">Comprar Direto ⚡</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="cart-sidebar" class="cart-sidebar">
+        <div class="cart-header">
+            <h3>Sua Sacola</h3>
+            <span class="close-cart" onclick="fecharCarrinho()">&times;</span>
+        </div>
+        <div class="cart-body" id="itens-carrinho"></div>
+        <div class="cart-footer">
+            <div class="cart-total-line">
+                <span>Total:</span>
+                <span id="cart-total-value">R$ 0,00</span>
+            </div>
+            <button class="btn-whatsapp-cart" onclick="finalizarCompraWhatsApp()">
+                <i class="fab fa-whatsapp"></i> Fechar Pedido
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // --- SUA LISTA DE PRODUTOS ---
+        const meusProdutos = [
+            { 
+                nome: "Geladeira consul 240 Litros", 
+                preco: "576,00", 
+                img: "https://i.postimg.cc/Fz5fVWZk/a60ad12690e0a0819258046bd3b00acc.jpg",
+                linkCheckout: "https://app.evopay.cash/checkout/cmlf8bc8r000e4yu505nvhy4u" 
+            },
+            { 
+                nome: "Ar condicionado janela 10000btus", 
+                preco: "505,00",
+                img: "https://i.postimg.cc/C1mpr5p5/416c9db990c948e45564dd1dd83c8952.jpg",
+                linkCheckout: "https://app.evopay.cash/checkout/cmlf6ocdw000c4yu57sgvd2gq"
+            },
+            {
+              nome: "sofá retrátil",
+              preco: "491,00",
+              img: "https://i.postimg.cc/90LX91QD/bba5ed52eeb05e9283e5af07139b939f.jpg",
+              linkcheckout: "https://app.evopay.cash/checkout/cmlxsbyf800fg4yu5u101hepg"
+              },
+              {
+                nome: "Smart TV 32",
+                preco: "499,00",
+                img: "https://i.postimg.cc/662LVF98/8d6950a7a0eb5472df4379d04d267fad.jpg",
+                linkcheckout: "https://app.evopay.cash/checkout/cmlaaqgjc0006iek6wxe6al0m"
+                },
+                {
+                  nome: "guarda roupa casal",
+                  preco: "600,00",
+                  img: "https://i.postimg.cc/vT08nXZg/9d75f6dda33c5fd00b1c920d48f1532d.jpg",
+                  linkcheckout: "https://app.evopay.cash/checkout/cmlu02tll00ce4yu5uysg865f"
+                  },
+                  {
+                    nome: "máquina de lavar 12kg",
+                    preco: "539,00",
+                    img: "https://i.postimg.cc/76mrthr6/ef1081973a04ae76c0e6acae986ff1c5.jpg",
+                    linkcheckout: "https://app.evopay.cash/checkout/cmlqsjchm009z4yu5xn4zeoa4"
+                    },
+                    { 
+                      nome: "Air fryer",
+                      preco: "287,00",
+                      img: "https://i.postimg.cc/tT2GvJGg/b38dcd8ca81147a8609793908232631c.jpg",
+                      linkcheckout: "https://app.evopay.cash/checkout/cmlxsekaq00fi4yu5ublbdxhi"
+                      },
+                      {
+                        nome: "guarda roupa solteiro",
+                        preco: "437,00",
+                        img: "https://i.postimg.cc/3NtrG9xy/1c72278667d6f1b1443aba37bda14f21.jpg",
+                        linkcheckout: "https://app.evopay.cash/checkout/cmlxshem400fk4yu5j3hiltrr"
+                        },
+                        {
+                         nome: "cama baú solteiro",
+                         preco: " 502,00",
+                         img: "https://i.postimg.cc/rsfy4gw4/ebd8765d6349974905be88416a44ac85.jpg",
+                         linkcheckout: "https://app.evopay.cash/checkout/cmlxsj8er00fm4yu5z7g4syma"
+                         },
+                         {
+                         nome: "fogão 5 bocas",
+                         preco: "600,00",
+                         img: "https://i.postimg.cc/J0p7XKzZ/3e995565b413c593be490c879a97e0a7.jpg",
+                         linkcheckout: "https://app.evopay.cash/checkout/cmlxskpk800fo4yu50fj4nd21"
+                        },
+                        
+                
+        ];
+
+        // --- GERADOR AUTOMÁTICO ---
+        const container = document.getElementById('lista-de-produtos');
+        const totalSlots = 10; 
+        let todosOsProdutos = [];
+
+        for (let i = 0; i < totalSlots; i++) {
+            let precoPadrao = "24,99";
+            let prodDaLista = meusProdutos[i];
+            
+            let produto = {
+                nome: prodDaLista ? prodDaLista.nome : `PEÇA LS $TYLE ${i + 1}`,
+                preco: (prodDaLista && prodDaLista.preco) ? prodDaLista.preco : precoPadrao,
+                img: prodDaLista ? prodDaLista.img : `https://via.placeholder.com/300x400/222222/D4AF37?text=FOTO+${i + 1}`,
+                linkCheckout: prodDaLista ? prodDaLista.linkCheckout : "#"
+            };
+            todosOsProdutos.push(produto);
+
+            let htmlCartao = `
+                <article class="product-card">
+                    <span class="badge-left">PREMIUM ✨</span>
+                    <img src="${produto.img}" class="product-img" alt="Foto">
+                    <div class="product-info">
+                        <div class="product-title">${produto.nome}</div>
+                        <div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+                        <div class="price-pix">R$ ${produto.preco}</div>
+                        <button class="btn-comprar" onclick="abrirModal(${i})">Comprar <i class="fas fa-shopping-bag"></i></button>
+                    </div>
+                </article>
+            `;
+            container.innerHTML += htmlCartao;
+        }
+
+        // --- LÓGICA DO SISTEMA ---
+        let produtoAtualIndex = null;
+        let linkDoProdutoAtual = "";
+        let carrinhoDeCompras = [];
+
+        function abrirModal(index) {
+            produtoAtualIndex = index;
+            let prod = todosOsProdutos[index];
+            document.getElementById('modal-title').innerText = prod.nome;
+            document.getElementById('modal-img').src = prod.img;
+            linkDoProdutoAtual = prod.linkCheckout;
+            
+            document.getElementById('modal-opcoes').style.display = 'flex';
+        }
+
+        function fecharModal() {
+            document.getElementById('modal-opcoes').style.display = 'none';
+        }
+
+        function irParaPagamento() {
+            if(linkDoProdutoAtual === "#" || !linkDoProdutoAtual) {
+                alert("Você precisa colocar o link do seu checkout neste produto lá no código!");
+                return;
+            }
+            // Manda pro checkout direto, sem passar cor ou tamanho
+            window.open(linkDoProdutoAtual, '_blank');
+            fecharModal();
+        }
+
+        function adicionarAoCarrinho() {
+            let prod = todosOsProdutos[produtoAtualIndex];
+            let precoNumero = parseFloat(prod.preco.replace(',', '.'));
+
+            carrinhoDeCompras.push({
+                nome: prod.nome,
+                preco: precoNumero
+            });
+
+            fecharModal();
+            atualizarVisualDoCarrinho();
+            abrirCarrinho(); 
+        }
+
+        function abrirCarrinho() { document.getElementById('cart-sidebar').classList.add('open'); }
+        function fecharCarrinho() { document.getElementById('cart-sidebar').classList.remove('open'); }
+
+        function atualizarVisualDoCarrinho() {
+            let containerCarrinho = document.getElementById('itens-carrinho');
+            let contadorHeader = document.getElementById('cart-count');
+            let valorTotalElemento = document.getElementById('cart-total-value');
+            
+            containerCarrinho.innerHTML = "";
+            let somaTotal = 0;
+
+            if(carrinhoDeCompras.length === 0) {
+                containerCarrinho.innerHTML = "<p style='color: #888; text-align: center; margin-top: 50px;'>Sua sacola está vazia.</p>";
+            } else {
+                carrinhoDeCompras.forEach((item, index) => {
+                    somaTotal += item.preco;
+                    containerCarrinho.innerHTML += `
+                        <div class="cart-item">
+                            <div class="cart-item-info">
+                                <div class="cart-item-title">${item.nome}</div>
+                                <div class="cart-item-price">R$ ${item.preco.toFixed(2).replace('.', ',')}</div>
+                            </div>
+                            <button class="btn-remove" onclick="removerDoCarrinho(${index})"><i class="fas fa-trash"></i></button>
+                        </div>
+                    `;
+                });
+            }
+
+            contadorHeader.innerText = carrinhoDeCompras.length;
+            valorTotalElemento.innerText = "R$ " + somaTotal.toFixed(2).replace('.', ',');
+        }
+
+        function removerDoCarrinho(index) {
+            carrinhoDeCompras.splice(index, 1);
+            atualizarVisualDoCarrinho();
+        }
+
+        function finalizarCompraWhatsApp() {
+            if(carrinhoDeCompras.length === 0) {
+                alert("Coloque pelo menos um produto na sacola!");
+                return;
+            }
+
+            let textoPedido = "Fala, LS $tyle! Quero finalizar meu pedido:\n\n";
+            let total = 0;
+
+            carrinhoDeCompras.forEach(item => {
+                textoPedido += `🛍️ 1x ${item.nome} - R$ ${item.preco.toFixed(2).replace('.', ',')}\n`;
+                total += item.preco;
+            });
+
+            textoPedido += `\n💰 *Total: R$ ${total.toFixed(2).replace('.', ',')}*\n\nComo faço o pagamento?`;
+
+            let linkZap = "https://wa.me/5521988568185?text=" + encodeURIComponent(textoPedido);
+            window.open(linkZap, '_blank');
+        }
+
+        atualizarVisualDoCarrinho();
+    </script>
+</body>
+</html>
